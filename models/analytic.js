@@ -276,7 +276,7 @@ exports.uploadnse= async(params) =>{
     let i = 0;
     let bulk_data = []
     for (const param of params.excelData) {
-      await bulk_data.push([ param.ISIN,param.PREVCLOSE,param.TIMESTAMP ] )
+      await bulk_data.push([ param.ISIN,param.CLOSE,param.TIMESTAMP ] )
       i = i+1;
 
     }
