@@ -12,7 +12,7 @@ const {db} = require('../config/config')
 
 exports.fetch = async () => {
   try {
-    let sql = `SELECT h.holdings_id,h.isin as isin,h.quantity,n.prevclose,s.stock_name FROM holdings h
+    let sql = `SELECT h.holdings_id,h.isin as isin,h.quantity,n.close,s.stock_name FROM holdings h
     LEFT JOIN stock s ON h.isin = s.isin LEFT JOIN nse n ON h.isin = n.isin`; 
     const result =  await db.query(sql)
     return result[0];
@@ -24,8 +24,8 @@ exports.fetch = async () => {
 
 exports.sector = async () => {
   try {
-    let sql = `SELECT holdings.holdings_id,holdings.isin as isin,holdings.quantity,nse.prevclose,stock.sector FROM holdings 
-    LEFT JOIN stock ON holdings.isin = stock.isin LEFT JOIN nse ON holdings.isin = nse.isin`; 
+    let sql = `SELECT holdings.holdings_id,holdings.isin as isin,holdings.quantity,nse.close,stock.sector FROM holdings 
+    LEFT JOIN stock ON holdings.isin = stock.isin LEFT JOIN nse ON holdings.isin = nse.isin ORDER BY quantity DESC`; 
     const result =  await db.query(sql)
     return result[0];
   } catch (e) {
@@ -35,7 +35,7 @@ exports.sector = async () => {
 
 exports.industry = async () => {
   try {
-    let sql = `SELECT holdings.holdings_id,holdings.isin as isin,holdings.quantity,nse.prevclose,stock.industry FROM holdings 
+    let sql = `SELECT holdings.holdings_id,holdings.isin as isin,holdings.quantity,nse.close,stock.industry FROM holdings 
     LEFT JOIN stock ON holdings.isin = stock.isin LEFT JOIN nse ON holdings.isin = nse.isin`; 
     const result =  await db.query(sql)
     return result[0];
@@ -276,7 +276,7 @@ exports.uploadnse= async(params) =>{
     let i = 0;
     let bulk_data = []
     for (const param of params.excelData) {
-      await bulk_data.push([ param.ISIN,param.CLOSE,param.TIMESTAMP ] )
+      await bulk_data.push([ param.CLOSE,param.PREVCLOSE,param.SYMBOL,param.SERIES,param.ISIN,param.TIMESTAMP] )
       i = i+1;
 
     }
@@ -296,7 +296,7 @@ exports.uploadnse= async(params) =>{
       // await con.beginTransaction();
     //  if( !nse_id ) {
       //console.log('insert')
-      let sql=  `insert INTO nse (isin,prevclose,date) VALUES ?`
+      let sql=  `insert INTO nse (close, prevclose, symbol,series,isin,date) VALUES ?`
       //console.log(sql)
       await con.query(sql,
         [bulk_data])
