@@ -28,6 +28,13 @@ exports.industry = async (req, res) => {
   res.json({total : total, data : result })
 };
 
+exports.market = async (req, res) => {
+  let total = await analytic.totalWe(); 
+  let result = await analytic.market()
+  res.json({total : total, data : result })
+};
+
+
 // exports.addRecord = async (req, res) => {
 //     if(req.body.constructor === Object && Object.keys(req.body).length === 0){
 //       throw '400:Parameter not Valid'
@@ -102,7 +109,17 @@ exports.uploadnse = async (req,res) => {
       insert_id : result
     })
 }
-
+// exports.updatemarket = async (req, res) => {
+//   if(req.body.constructor === Object &&  Object.keys(req.body).length === 0){
+//     throw '400:Parameter not Valid'
+//   }  
+//   const result = await analytic.updatemarket(req.body)
+//     res.json({
+//       message: `market data updated successfully`,
+//       insert_id : result
+//     })
+ 
+// };
 // exports.updateRecord = async (req,res) => {
 //   if(Object.keys(req.params).length === 0 && req.params.analytic_id === undefined){
 //     throw '400:Parameter not Valid'
